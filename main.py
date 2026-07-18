@@ -1,0 +1,79 @@
+from pathlib import Path
+import shutil
+
+file_types = {
+    "Image":[".jpg",".png",".gif"],
+    "Video":[".mp4",".mkv"],
+    "Audio":[".mp3",".wav"],
+    "Document":[".pdf",".txt",".docx"],
+    "Code":[".py",".js",".java",".cpp",".html",".css"],
+    "Executables":[".exe",".app",".sh"]
+}
+
+def get_file_type(file, file_types):
+    extension = file.suffix
+    
+    for category, extensions in file_types.items():
+        if extension in extensions:
+            return category
+    return "Others"
+
+def analyze_folder(directory):
+    elements = directory.iterdir()
+    organized_files = {}
+    for element in elements:
+            if element.is_file():
+                category = get_file_type(element, file_types)
+                if category in organized_files:
+                    organized_files[category].append(element)
+                else:
+                    organized_files[category] = [element]
+    return organized_files
+
+def create_folders(organized_files, directory):
+    for category in organized_files:
+        folder_path = directory / category
+        folder_path.mkdir(exist_ok=True)
+
+def move_files(organized_files, directory):
+    for category, files in organized_files.items():
+        destination = directory / category
+        for file in files:
+            shutil.move(file, destination)
+
+
+
+while True:
+    user_path = input("Which directory do you want to organize?: ")
+    path = Path(user_path)
+
+    if path.is_dir():
+        break
+
+    print("Invalid directory, please try again.\n")
+
+
+organized_files = analyze_folder(path)
+create_folders(organized_files, path)
+move_files(organized_files, path)
+
+# def count_folder_content(direccion):
+#     contenido = direccion.iterdir()
+#     cantidad_archivos = 0
+#     cantidad_carpetas = 0
+
+#     for elemento in contenido:
+#         if elemento.is_file():
+#             cantidad_archivos += 1
+#         elif elemento.is_dir():
+#             cantidad_carpetas += 1
+
+#     return cantidad_archivos, cantidad_carpetas
+
+
+
+         
+
+# count_folder_content(ruta)
+# cantidad_archivos, cantidad_carpetas = count_folder_content(ruta)
+# print("Hay un total de", cantidad_carpetas, "📁 Carpetas y", cantidad_archivos, "📄 Archivos.")
