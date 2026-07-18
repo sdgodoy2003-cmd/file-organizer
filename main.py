@@ -57,23 +57,3 @@ organized_files = analyze_folder(path)
 create_folders(organized_files, path)
 move_files(organized_files, path)
 
-# def count_folder_content(direccion):
-#     contenido = direccion.iterdir()
-#     cantidad_archivos = 0
-#     cantidad_carpetas = 0
-
-#     for elemento in contenido:
-#         if elemento.is_file():
-#             cantidad_archivos += 1
-#         elif elemento.is_dir():
-#             cantidad_carpetas += 1
-
-#     return cantidad_archivos, cantidad_carpetas
-
-
-
-         
-
-# count_folder_content(ruta)
-# cantidad_archivos, cantidad_carpetas = count_folder_content(ruta)
-# print("Hay un total de", cantidad_carpetas, "📁 Carpetas y", cantidad_archivos, "📄 Archivos.")
