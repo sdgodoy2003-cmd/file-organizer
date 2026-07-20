@@ -1,59 +1,35 @@
 from pathlib import Path
-import shutil
+from organizer import analyze_folder, move_files, create_folders
 
-file_types = {
-    "Image":[".jpg",".png",".gif"],
-    "Video":[".mp4",".mkv"],
-    "Audio":[".mp3",".wav"],
-    "Document":[".pdf",".txt",".docx"],
-    "Code":[".py",".js",".java",".cpp",".html",".css"],
-    "Executables":[".exe",".app",".sh"]
-}
+def main():
+    while True:
+        user_path = input("Which directory do you want to organize?: ")
+        path = Path(user_path)
 
-def get_file_type(file, file_types):
-    extension = file.suffix
-    
-    for category, extensions in file_types.items():
-        if extension in extensions:
-            return category
-    return "Others"
+        if path.is_dir():
+            break
 
-def analyze_folder(directory):
-    elements = directory.iterdir()
-    organized_files = {}
-    for element in elements:
-            if element.is_file():
-                category = get_file_type(element, file_types)
-                if category in organized_files:
-                    organized_files[category].append(element)
-                else:
-                    organized_files[category] = [element]
-    return organized_files
+        print("\nInvalid directory, please try again.\n")
 
-def create_folders(organized_files, directory):
-    for category in organized_files:
-        folder_path = directory / category
-        folder_path.mkdir(exist_ok=True)
 
-def move_files(organized_files, directory):
+    organized_files = analyze_folder(path)
+    print("\nFolder analyzed successfully.\n\nSummary:\n----------------")
     for category, files in organized_files.items():
-        destination = directory / category
-        for file in files:
-            shutil.move(file, destination)
+        print(category.ljust(12),":", len(files))
+    print("----------------\n")
 
+    while True:
+        confirmation = input("Do you want to continue? (y/n): ").lower()
+        if confirmation == "y":
+            create_folders(organized_files, path)
+            move_files(organized_files, path)
+            print("\nFolder organized successfully.")
+            break
+        elif confirmation == "n":
+            print("\nNo changes were made.")
+            break
+        else:
+            print("\nInvalid answer, please try again.\n")
 
-
-while True:
-    user_path = input("Which directory do you want to organize?: ")
-    path = Path(user_path)
-
-    if path.is_dir():
-        break
-
-    print("Invalid directory, please try again.\n")
-
-
-organized_files = analyze_folder(path)
-create_folders(organized_files, path)
-move_files(organized_files, path)
-
+if __name__ == "__main__":
+    main()
